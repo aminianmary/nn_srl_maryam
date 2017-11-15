@@ -79,7 +79,36 @@ def read_conll09(fh):
         read += 1
         yield ConllStruct(words, predicates)
     print read, 'sentences read.'
-        
+
+def read_conllu(fh):
+    sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
+    read = 0
+    for sentence in sentences:
+        words = []
+        predicates = list()
+        entries = sentence.strip().split('\n')
+        for entry in entries:
+            # ignore comments
+            if not entry.startswith('#'):
+                spl = entry.split('\t')
+                # ignore multi-word expressions and empty nodes
+                if not '-' in spl[0] and not '.' in spl[0]:
+                    predicateList = dict()
+                    is_pred = False
+                    if spl[8] == 'Y':
+                        is_pred = True
+                        predicates.append(int(spl[0]) - 1)
+
+            for i in range(10, len(spl)):
+                predicateList[i - 10] = spl[i]
+
+            words.append(
+                ConllEntry(int(spl[0]) - 1, spl[1], spl[2], spl[3], spl[9], int(spl[6]), spl[7], predicateList,
+                           is_pred))
+        read += 1
+        yield ConllStruct(words, predicates)
+    print read, 'sentences read.'
+
 def write_conll(fn, conll_structs):
     with codecs.open(fn, 'w') as fh:
         for conll_struct in conll_structs:
