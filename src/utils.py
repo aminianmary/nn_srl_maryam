@@ -40,7 +40,7 @@ def vocab(conll_path):
     semRelCount = Counter()
     lemma_count = Counter()
 
-    for sentence in read_conll(conll_path):
+    for sentence in read_conll09(conll_path):
         wordsCount.update([node.norm for node in sentence.entries])
         posCount.update([node.pos for node in sentence.entries])
         for node in sentence.entries:
@@ -55,7 +55,7 @@ def vocab(conll_path):
             {p: i for i, p in enumerate(posCount)}, semRelCount.keys(),
             {l: i for i, l in enumerate(lemma_count)})
 
-def read_conll(fh):
+def read_conll09(fh):
     sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
     read = 0
     for sentence in sentences:
@@ -79,7 +79,7 @@ def read_conll(fh):
         read += 1
         yield ConllStruct(words, predicates)
     print read, 'sentences read.'
-
+        
 def write_conll(fn, conll_structs):
     with codecs.open(fn, 'w') as fh:
         for conll_struct in conll_structs:

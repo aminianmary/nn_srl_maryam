@@ -1,5 +1,5 @@
 from dynet import *
-from utils import read_conll
+from utils import read_conll09
 import time, random, os,math
 import numpy as np
 from collections import  defaultdict
@@ -131,7 +131,7 @@ class SRLLSTM:
 
     def Train(self, conll_path):
         start = time.time()
-        shuffledData = list(read_conll(conll_path))
+        shuffledData = list(read_conll09(conll_path))
         random.shuffle(shuffledData)
         errs,loss,iters,sen_num = [],0,0,0
         for iSentence, sentence in enumerate(shuffledData):
@@ -151,7 +151,7 @@ class SRLLSTM:
         self.trainer.update()
 
     def Predict(self, conll_path):
-        for iSentence, sentence in enumerate(read_conll(conll_path)):
+        for iSentence, sentence in enumerate(read_conll09(conll_path)):
             self.decode(sentence)
             renew_cg()
             yield sentence
