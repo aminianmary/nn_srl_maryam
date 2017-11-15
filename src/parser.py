@@ -41,7 +41,7 @@ if __name__ == '__main__':
     if options.conll_train:
         print 'Preparing vocab'
         print options
-        words, lemma_count,w2i, pos, semRels, pl2i = utils.vocab(options.conll_train)
+        words, lemma_count,w2i, pos, semRels, pl2i = utils.vocab(options.conll_train, options.format)
         with open(os.path.join(options.outdir, options.params), 'w') as paramsfp:
             pickle.dump((words,lemma_count,w2i, pos, semRels, pl2i, options), paramsfp)
         print 'Finished collecting vocab'
