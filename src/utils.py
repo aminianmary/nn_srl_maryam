@@ -34,13 +34,13 @@ class ConllEntry:
             entry_list.append(p)
         return '\t'.join(entry_list)
 
-def vocab(conll_path):
+def vocab(conll_path, format):
     wordsCount = Counter()
     posCount = Counter()
     semRelCount = Counter()
     lemma_count = Counter()
 
-    for sentence in read_conll09(conll_path):
+    for sentence in read_conll(conll_path, format):
         wordsCount.update([node.norm for node in sentence.entries])
         posCount.update([node.pos for node in sentence.entries])
         for node in sentence.entries:
@@ -54,6 +54,12 @@ def vocab(conll_path):
     return (wordsCount, lemma_count, {w: i for i, w in enumerate(wordsCount)},
             {p: i for i, p in enumerate(posCount)}, semRelCount.keys(),
             {l: i for i, l in enumerate(lemma_count)})
+
+def read_conll(fh, format):
+    if format=="conll09":
+        read_conll09(fh)
+    elif format=="conllu":
+        read_conllu(fh)
 
 def read_conll09(fh):
     sentences = codecs.open(fh, 'r').read().strip().split('\n\n')

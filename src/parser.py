@@ -51,11 +51,11 @@ if __name__ == '__main__':
         parser = SRLLSTM(words,lemma_count, pos, semRels, w2i, pl2i, options)
         for epoch in xrange(options.epochs):
             print 'Starting epoch', epoch
-            parser.Train(options.conll_train)
+            parser.Train(options.conll_train, options.format)
 
             if options.conll_dev != '':
                 start = time.time()
-                utils.write_conll(os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt', parser.Predict(options.conll_dev))
+                utils.write_conll(os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt', parser.Predict(options.conll_dev, options.format))
                 os.system(
                     'perl src/utils/eval.pl -g ' + options.conll_dev + ' -s ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt' + ' > ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.eval &')
                 print 'Finished predicting dev; time:', time.time() - start
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         parser = SRLLSTM(words,lemma_count,pos, semRels, w2i, pl2i, stored_opt)
         parser.Load(os.path.join(options.outdir, options.model))
         ts = time.time()
-        pred = list(parser.Predict(options.input))
+        pred = list(parser.Predict(options.input, options.format))
         te = time.time()
         utils.write_conll(options.output, pred)
         print 'Finished predicting test', te - ts

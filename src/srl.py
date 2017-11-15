@@ -1,5 +1,5 @@
 from dynet import *
-from utils import read_conll09
+from utils import read_conll
 import time, random, os,math
 import numpy as np
 from collections import  defaultdict
@@ -129,9 +129,9 @@ class SRLLSTM:
                 scores = W * concatenate([v_i, v_p])
                 sentence.entries[arg_index].predicateList[p] = self.iroles[np.argmax(scores.npvalue())]
 
-    def Train(self, conll_path):
+    def Train(self, conll_path, format):
         start = time.time()
-        shuffledData = list(read_conll09(conll_path))
+        shuffledData = list(read_conll(conll_path, format))
         random.shuffle(shuffledData)
         errs,loss,iters,sen_num = [],0,0,0
         for iSentence, sentence in enumerate(shuffledData):
@@ -150,8 +150,8 @@ class SRLLSTM:
                 start = time.time()
         self.trainer.update()
 
-    def Predict(self, conll_path):
-        for iSentence, sentence in enumerate(read_conll09(conll_path)):
+    def Predict(self, conll_path, format):
+        for iSentence, sentence in enumerate(read_conll(conll_path, format)):
             self.decode(sentence)
             renew_cg()
             yield sentence
