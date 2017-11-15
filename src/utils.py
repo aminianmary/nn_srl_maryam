@@ -57,9 +57,57 @@ def vocab(conll_path, format):
 
 def read_conll(fh, format):
     if format=="conll09":
-        read_conll09(fh)
+        sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
+        read = 0
+        for sentence in sentences:
+            words = []
+            predicates = list()
+            entries = sentence.strip().split('\n')
+            for entry in entries:
+                spl = entry.split('\t')
+                predicateList = dict()
+                is_pred = False
+                if spl[12] == 'Y':
+                    is_pred = True
+                    predicates.append(int(spl[0]) - 1)
+
+                for i in range(14, len(spl)):
+                    predicateList[i - 14] = spl[i]
+
+                words.append(
+                    ConllEntry(int(spl[0]) - 1, spl[1], spl[3], spl[5], spl[13], int(spl[9]), spl[11], predicateList,
+                               is_pred))
+            read += 1
+            yield ConllStruct(words, predicates)
+        print read, 'sentences read.'
     elif format=="conllu":
-        read_conllu(fh)
+        sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
+        read = 0
+        for sentence in sentences:
+            words = []
+            predicates = list()
+            entries = sentence.strip().split('\n')
+            for entry in entries:
+                # ignore comments
+                if not entry.startswith('#'):
+                    spl = entry.split('\t')
+                    # ignore multi-word expressions and empty nodes
+                    if not '-' in spl[0] and not '.' in spl[0]:
+                        predicateList = dict()
+                        is_pred = False
+                        if spl[8] == 'Y':
+                            is_pred = True
+                            predicates.append(int(spl[0]) - 1)
+
+                for i in range(10, len(spl)):
+                    predicateList[i - 10] = spl[i]
+
+                words.append(
+                    ConllEntry(int(spl[0]) - 1, spl[1], spl[2], spl[3], spl[9], int(spl[6]), spl[7], predicateList,
+                               is_pred))
+            read += 1
+            yield ConllStruct(words, predicates)
+        print read, 'sentences read.'
 
 def read_conll09(fh):
     sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
