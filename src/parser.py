@@ -36,22 +36,23 @@ if __name__ == '__main__':
     parser.add_option("--dynet-gpu", action="store_true", dest="--dynet-gpu", default=False, help='Use GPU instead of cpu')
 
     (options, args) = parser.parse_args()
-    print 'Using external embedding:', options.external_embedding
+    print ('Using external embedding:')
+    print (options.external_embedding)
     from srl import SRLLSTM
 
     if options.conll_train:
-        print 'Preparing vocab'
-        print options
+        print ('Preparing vocab')
+        print (options)
         words, lemma_count,w2i, pos, semRels, pl2i = utils.vocab(options.conll_train, options.format)
         with open(os.path.join(options.outdir, options.params), 'w') as paramsfp:
             pickle.dump((words,lemma_count,w2i, pos, semRels, pl2i, options), paramsfp)
-        print 'Finished collecting vocab'
+        print ('Finished collecting vocab')
 
-        print 'Initializing blstm srl:'
+        print ('Initializing blstm srl:')
         best_f_score = 0.0
         parser = SRLLSTM(words,lemma_count, pos, semRels, w2i, pl2i, options)
         for epoch in xrange(options.epochs):
-            print 'Starting epoch', epoch
+            print ('Starting epoch', epoch)
             parser.Train(options.conll_train, options.format)
 
             if options.conll_dev != '':
@@ -59,17 +60,17 @@ if __name__ == '__main__':
                 utils.write_conll(os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt', parser.Predict(options.conll_dev, options.format))
                 os.system(
                     'perl src/utils/eval.pl -g ' + options.conll_dev + ' -s ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt' + ' > ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.eval')
-                print 'Finished predicting dev; time:', time.time() - start
+                print ('Finished predicting dev; time:' + str(time.time() - start))
 
             labeled_f, unlabeled_f = utils.get_scores(
                 os.path.join(options.outdir, options.model) + str(epoch + 1) + '.eval')
-            print 'epoch: ' + str(epoch) + '-- labeled F1: ' + str(labeled_f) + ' Unlabaled F: ' + str(unlabeled_f)
+            print ('epoch: ' + str(epoch) + '-- labeled F1: ' + str(labeled_f) + ' Unlabaled F: ' + str(unlabeled_f))
             if float(labeled_f) > best_f_score:
                 parser.Save(os.path.join(options.outdir, options.model))
                 best_f_score = float(labeled_f)
                 best_epoch = epoch
 
-        print 'Best epoch: ' + str(best_epoch)
+        print ('Best epoch: ' + str(best_epoch))
 
     if options.input and options.output:
         with open(os.path.join(options.outdir, options.params), 'r') as paramsfp:
@@ -81,4 +82,4 @@ if __name__ == '__main__':
         pred = list(parser.Predict(options.input, options.format))
         te = time.time()
         utils.write_conll(options.output, pred)
-        print 'Finished predicting test', te - ts
+        print ('Finished predicting test', te - ts)
