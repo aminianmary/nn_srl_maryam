@@ -33,6 +33,7 @@ if __name__ == '__main__':
     parser.add_option("--save_epoch", action="store_true", dest="save_epoch", default=False, help='Save each epoch.')
     parser.add_option("--region", action="store_false", dest="region", default=True, help='Use predicate boolean flag.')
     parser.add_option("--format", type="string", dest="format", default="conll09", help ="input file format: conll09 or conllu")
+    parser.add_option("--dynet-gpu", action="store_true", dest="--dynet-gpu", default=False, help='Use GPU instead of cpu')
 
     (options, args) = parser.parse_args()
     print 'Using external embedding:', options.external_embedding
