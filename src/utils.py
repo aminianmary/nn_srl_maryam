@@ -79,7 +79,7 @@ def read_conll(fh, format):
                                is_pred))
             read += 1
             yield ConllStruct(words, predicates)
-        print (str(read)+ 'sentences read.')
+        print read, 'sentences read.'
     elif format=="conllu":
         sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
         read = 0
@@ -107,7 +107,7 @@ def read_conll(fh, format):
                                is_pred))
             read += 1
             yield ConllStruct(words, predicates)
-        print (str(read) + 'sentences read.')
+        print read, 'sentences read.'
 
 def read_conll09(fh):
     sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
@@ -132,7 +132,7 @@ def read_conll09(fh):
                            is_pred))
         read += 1
         yield ConllStruct(words, predicates)
-    print (str(read) + 'sentences read.')
+    print read, 'sentences read.'
 
 def read_conllu(fh):
     sentences = codecs.open(fh, 'r').read().strip().split('\n\n')
@@ -161,7 +161,7 @@ def read_conllu(fh):
                            is_pred))
         read += 1
         yield ConllStruct(words, predicates)
-    print (str(read) +  'sentences read.')
+    print read, 'sentences read.'
 
 def write_conll(fn, conll_structs):
     with codecs.open(fn, 'w') as fh:

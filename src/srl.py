@@ -43,7 +43,7 @@ class SRLLSTM:
             self.x_pe.init_row(0,self.noextrn)
             self.x_pe.init_row(1,self.noextrn)
             self.x_pe.set_updated(False)
-            print ('Load external embedding. Vector dimensions' +str(self.edim))
+            print 'Load external embedding. Vector dimensions', self.edim
 
         self.inp_dim = self.d_w + self.d_l + self.d_pos + (self.edim if self.external_embedding is not None else 0) + (1 if self.region else 0)  # 1 for predicate indicator
         self.deep_lstms = BiRNNBuilder(self.k, self.inp_dim, 2*self.d_h, self.model, VanillaLSTMBuilder)
@@ -144,7 +144,7 @@ class SRLLSTM:
                 sum_errs.backward()
                 self.trainer.update()
                 renew_cg()
-                print ('loss:' + str(loss)  + 'time:' + str(time.time() - start) +  'sen#' + str(iSentence+1) + 'instances' + str(len(errs)))
+                print 'loss:', loss, 'time:', time.time() - start, 'sen#',(iSentence+1), 'instances',len(errs)
                 errs, loss, sen_num = [], 0, 0
                 iters+=1
                 start = time.time()
