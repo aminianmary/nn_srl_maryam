@@ -57,17 +57,16 @@ if __name__ == '__main__':
             if options.conll_dev != '':
                 start = time.time()
                 utils.write_conll(os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt', parser.Predict(options.conll_dev, options.format))
-                os.system(
-                    'perl src/utils/eval.pl -g ' + options.conll_dev + ' -s ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt' + ' > ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.eval')
+                os.system('perl src/utils/eval.pl -g ' + options.conll_dev + ' -s ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.txt' + ' > ' +  os.path.join(options.outdir, options.model) + str(epoch+1)+ '.eval&')
                 print 'Finished predicting dev; time:', time.time() - start
 
-            labeled_f, unlabeled_f = utils.get_scores(
-                os.path.join(options.outdir, options.model) + str(epoch + 1) + '.eval')
-            print 'epoch: ' + str(epoch) + '-- labeled F1: ' + str(labeled_f) + ' Unlabaled F: ' + str(unlabeled_f)
-            if float(labeled_f) > best_f_score:
-                parser.Save(os.path.join(options.outdir, options.model))
-                best_f_score = float(labeled_f)
-                best_epoch = epoch
+                labeled_f, unlabeled_f = utils.get_scores(os.path.join(options.outdir, options.model) + str(epoch + 1) + '.eval')
+                print 'epoch: ' + str(epoch) + '-- labeled F1: ' + str(labeled_f) + ' Unlabaled F: ' + str(unlabeled_f)
+
+                if float(labeled_f) > best_f_score:
+                    parser.Save(os.path.join(options.outdir, options.model))
+                    best_f_score = float(labeled_f)
+                    best_epoch = epoch
 
         print 'Best epoch: ' + str(best_epoch)
 
